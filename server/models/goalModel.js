@@ -6,6 +6,7 @@ const goalSchema = mongoose.Schema({
         required: [true, 'Please add a text value']
     }
 }, {
+    // Automatically adds timestamps
     timestamps: true
 })
 
