@@ -4,11 +4,20 @@ const dotenv         = require("dotenv").config(); // Allows .env file to hold e
 const {errorHandler} = require("./middleware/errorMiddleware");
 const connectDB      = require('./config/db');
 const port           = process.env.PORT || 5000;
+const cors = require('cors');
+const app = express();
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // Replace with your front-end URL
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // If you need to allow credentials
+};
+
+app.use(cors(corsOptions));
 
 // Runs function from /config/db.js
 connectDB();
 
-const app = express();
 
 // Parses request and response data into JSON
 app.use(express.json());
