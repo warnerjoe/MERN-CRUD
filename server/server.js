@@ -16,6 +16,7 @@ app.use(express.urlencoded({extended: false}));
 
 // Makes it so for any requests that go to /api/goals (or /api/goals/:id) it uses the goalRoutes file
 app.use('/api/goals', require('./routes/goalRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 
 // Enables error handler middleware
 app.use(errorHandler);

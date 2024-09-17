@@ -1,13 +1,14 @@
 const asyncHandler  = require("express-async-handler");
 
-const Goal          = require('../models/goalModel')
+const Goal          = require('../models/goalModel');
+const User          = require('../models/userModel');
 
 // @desc  Get goals
 // @route GET /api/goals
 // @access Private
 const getGoals = asyncHandler(async (req, res) => {
     // Returns the entire list of Goals when successful.
-    const goals = await Goal.find()
+    const goals = await Goal.find({ user: req.user.id })
 
     res.status(200).json(goals);
 })
@@ -25,7 +26,8 @@ const setGoal = asyncHandler(async (req, res) => {
 
     // Creates a goal with text equal to the body.text of the request.
     const goal = await Goal.create({ 
-        text: req.body.text
+        text: req.body.text,
+        user: req.user.id,
     })
 
     // Responds with object of the goal which was created
@@ -42,6 +44,19 @@ const updateGoal = asyncHandler(async (req, res) => {
     if(!goal) {
         res.status(400);
         throw new Error('Goal not found');
+    }
+    const user = await User.findById(req.user.id);
+
+    // Check for User
+    if(!user) {
+        res.status(401);
+        throw new Error('User not found');
+    }
+
+    // Make sure log in user matches the goal's owner
+    if(goal.user.toString() !== user.id) {
+        res.status(401);
+        throw new Error('User not authorized');
     }
 
     // Finds and updates the specific entry based on the ID, using the body of the request. 
@@ -63,6 +78,20 @@ const deleteGoal = asyncHandler(async (req, res) => {
     if(!goal) {
         res.status(400);
         throw new Error('Goal not found');
+    }
+
+    const user = await User.findById(req.user.id);
+    
+    // Check for User
+    if(!user) {
+        res.status(401);
+        throw new Error('User not found');
+    }
+
+    // Make sure log in user matches the goal's owner
+    if(goal.user.toString() !== user.id) {
+        res.status(401);
+        throw new Error('User not authorized');
     }
 
     // Returns the ID of the deleted item
