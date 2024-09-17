@@ -15,6 +15,7 @@ const userSchema = mongoose.Schema({
         required: [true, 'Please add a password']
     },
 },{
+    // Automatically adds a time stamp to the database entry
     timestamps: true,
 });
 

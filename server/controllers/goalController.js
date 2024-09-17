@@ -19,12 +19,13 @@ const getGoals = asyncHandler(async (req, res) => {
 const setGoal = asyncHandler(async (req, res) => {
     console.log(req.body);
 
+    // If the goal doesn't have a text field, return an error message.
     if(!req.body.text) {
         res.status(400);
-        throw new Error('Please add a text field');
+        throw new Error('Please add content to the text field.');
     }
 
-    // Creates a goal with text equal to the body.text of the request.
+    // Creates a goal with text equal to the body.text of the request and stores the user who created it.
     const goal = await Goal.create({ 
         text: req.body.text,
         user: req.user.id,
@@ -41,22 +42,25 @@ const updateGoal = asyncHandler(async (req, res) => {
     // Finds the entry which matches the id from the URL
     const goal = await Goal.findById(req.params.id);
 
+    // Return an error if the goal is not found
     if(!goal) {
         res.status(400);
         throw new Error('Goal not found');
     }
+
+    // Store the user (available via Protect middleware)
     const user = await User.findById(req.user.id);
 
-    // Check for User
+    // If not logged in, return an error message.
     if(!user) {
         res.status(401);
-        throw new Error('User not found');
+        throw new Error('No user found, please log in.');
     }
 
-    // Make sure log in user matches the goal's owner
+    // Make sure logged in user matches the goal's owner
     if(goal.user.toString() !== user.id) {
         res.status(401);
-        throw new Error('User not authorized');
+        throw new Error('User not authorized to modify this post.');
     }
 
     // Finds and updates the specific entry based on the ID, using the body of the request. 
@@ -80,18 +84,19 @@ const deleteGoal = asyncHandler(async (req, res) => {
         throw new Error('Goal not found');
     }
 
+    // Store the user (available via Protect middleware)
     const user = await User.findById(req.user.id);
-    
-    // Check for User
+
+    // If not logged in, return an error message.
     if(!user) {
         res.status(401);
-        throw new Error('User not found');
+        throw new Error('No user found, please log in.');
     }
 
-    // Make sure log in user matches the goal's owner
+    // Make sure logged in user matches the goal's owner
     if(goal.user.toString() !== user.id) {
         res.status(401);
-        throw new Error('User not authorized');
+        throw new Error('User not authorized to modify this post.');
     }
 
     // Returns the ID of the deleted item

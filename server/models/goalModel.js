@@ -1,7 +1,9 @@
+// Mongoose Schema for goals
 const mongoose = require('mongoose');
 
 const goalSchema = mongoose.Schema({
     user: {
+        // Gets the ID from the currently logged in user
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
