@@ -32,6 +32,7 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
     }
 })
 
+// On logout, use logout() function from authService.js
 export const logout = createAsyncThunk('auth/logout', async() => {
     await authService.logout();
 })
@@ -50,14 +51,17 @@ export const authSlice = createSlice({
     extraReducers: (builder) => {
         builder
         .addCase(register.pending, (state) => {
+            // When register is pending.
             state.isLoading = true;
         })
         .addCase(register.fulfilled, (state, action) => {
+            // When register is successful
             state.isLoading = false;
             state.isSuccess = true;
             state.user = action.payload;
         })
         .addCase(register.rejected, (state, action) => {
+            // When register is unsuccessful.
             state.isLoading = false;
             state.isError = true;
             state.message = action.payload;
@@ -65,14 +69,17 @@ export const authSlice = createSlice({
             state.user = null;
         })
         .addCase(login.pending, (state) => {
+            // When login pending
             state.isLoading = true;
         })
         .addCase(login.fulfilled, (state, action) => {
+            // When login successful
             state.isLoading = false;
             state.isSuccess = true;
             state.user = action.payload;
         })
         .addCase(login.rejected, (state, action) => {
+            // When login has an error
             state.isLoading = false;
             state.isError = true;
             state.message = action.payload;
@@ -80,8 +87,9 @@ export const authSlice = createSlice({
             state.user = null;
         })
         .addCase(logout.fulfilled, (state) => {
-                state.user = null;
-            })
+            // When logout fulfilled, set user to null
+            state.user = null;
+        })
     }
 })
 
