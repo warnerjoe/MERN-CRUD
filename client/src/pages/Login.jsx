@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaSignInAlt, FaUser } from 'react-icons/fa';
+import { FaSignInAlt } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -70,7 +70,7 @@ function Login() {
                     </div>
 
                     <div className="form-group">
-                        <input type='text' className='form-control' id='password' name='password' value={password} placeholder='Enter your password' onChange={ onChange }/>
+                        <input type='password' className='form-control' id='password' name='password' value={password} placeholder='Enter your password' onChange={ onChange }/>
                     </div>
 
                     

@@ -17,7 +17,6 @@ const getGoals = asyncHandler(async (req, res) => {
 // @route POST /api/goals
 // @access Private
 const setGoal = asyncHandler(async (req, res) => {
-    console.log(req.body);
 
     // If the goal doesn't have a text field, return an error message.
     if(!req.body.text) {
@@ -48,17 +47,15 @@ const updateGoal = asyncHandler(async (req, res) => {
         throw new Error('Goal not found');
     }
 
-    // Store the user (available via Protect middleware)
-    const user = await User.findById(req.user.id);
 
     // If not logged in, return an error message.
-    if(!user) {
+    if(!req.user) {
         res.status(401);
         throw new Error('No user found, please log in.');
     }
 
     // Make sure logged in user matches the goal's owner
-    if(goal.user.toString() !== user.id) {
+    if(goal.user.toString() !== req.user.id) {
         res.status(401);
         throw new Error('User not authorized to modify this post.');
     }
@@ -84,25 +81,27 @@ const deleteGoal = asyncHandler(async (req, res) => {
         throw new Error('Goal not found');
     }
 
-    // Store the user (available via Protect middleware)
-    const user = await User.findById(req.user.id);
-
     // If not logged in, return an error message.
-    if(!user) {
+    if(!req.user) {
         res.status(401);
         throw new Error('No user found, please log in.');
     }
 
     // Make sure logged in user matches the goal's owner
-    if(goal.user.toString() !== user.id) {
+    if(goal.user.toString() !== req.user.id) {
         res.status(401);
         throw new Error('User not authorized to modify this post.');
     }
+
+    await goal.remove();
 
     // Returns the ID of the deleted item
     res.status(200).json({ id: req.params.id });
 })
 
 module.exports = {
-    getGoals, setGoal, updateGoal, deleteGoal
+    getGoals, 
+    setGoal, 
+    updateGoal, 
+    deleteGoal,
 }

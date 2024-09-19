@@ -78,15 +78,9 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-    // Search for the logged in User in the database by it's ID
-    const { _id, name, email } = await User.findById(req.user.id);
-    
+
     // Respond with your user information
-    res.status(200).json({
-        id: _id,
-        name,
-        email
-    })
+    res.status(200).json(req.user)
 })
 
 // Generate JSON Web Token
